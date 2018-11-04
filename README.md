@@ -4,26 +4,22 @@ An all-powerful toolset for Argoneum.
 
 [![Build Status](https://travis-ci.org/argoneum/sentinel.svg?branch=master)](https://travis-ci.org/argoneum/sentinel)
 
-Sentinel is an autonomous agent for persisting, processing and automating Argoneum governance objects and tasks, and for expanded functions in the upcoming Argoneum release (Dash V13 release (Evolution)).
+Sentinel is an autonomous agent for persisting, processing and automating Argoneum governance objects and tasks, and for expanded functions in the upcoming Argoneum release rebased on top of Dash V13 release (Evolution).
 
-Sentinel is implemented as a Python application that binds to a local version 12 argoneumd instance on each Argoneum Masternode.
+Sentinel is implemented as a Python application that binds to a local argoneumd instance on each Argoneum Masternode.
 
-This guide covers installing Sentinel onto an existing Masternode in Ubuntu 14.04 / 16.04.
+This guide covers installing Sentinel onto an existing Masternode in Ubuntu 16.04 / 18.04.
 
 ## Installation
 
 ### 1. Install Prerequisites
 
-Make sure Python version 2.7.x or above is installed:
-
-    python --version
-
-Update system packages and ensure virtualenv is installed:
+Update system packages and ensure python and virtualenv are installed:
 
     $ sudo apt-get update
-    $ sudo apt-get -y install python-virtualenv
+    $ sudo apt-get -y install python-virtualenv git
 
-Make sure the local Argoneum daemon running is at least version 12.1 (120100)
+Make sure the local Argoneum daemon is running:
 
     $ argoneum-cli getinfo | grep version
 
@@ -35,7 +31,19 @@ Clone the Sentinel repo and install Python dependencies.
     $ virtualenv ./venv
     $ ./venv/bin/pip install -r requirements.txt
 
-### 3. Set up Cron
+### 3. Test the Configuration
+
+Test the config by running all tests from the sentinel folder you cloned into
+
+    $ ./venv/bin/py.test ./test
+
+Run Sentinel for the first time (may take up to a minute):
+
+    $ ./venv/bin/python bin/sentinel.py
+
+With all tests passing and crontab setup, Sentinel will stay in sync with argoneumd and the installation is complete
+
+### 4. Set up Cron
 
 Set up a crontab entry to call Sentinel every minute:
 
@@ -45,13 +53,7 @@ In the crontab editor, add the lines below, replacing '/home/YOURUSERNAME/sentin
 
     * * * * * cd /home/YOURUSERNAME/sentinel && ./venv/bin/python bin/sentinel.py >/dev/null 2>&1
 
-### 4. Test the Configuration
-
-Test the config by running all tests from the sentinel folder you cloned into
-
-    $ ./venv/bin/py.test ./test
-
-With all tests passing and crontab setup, Sentinel will stay in sync with argoneumd and the installation is complete
+If you run it as root (mot recommended), the path could be /root/sentinel.
 
 ## Configuration
 
